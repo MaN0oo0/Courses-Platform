@@ -1,0 +1,7 @@
+.HelpersBtns {
+  display: flex;
+  justify-content: space-between;
+}
+.pagnateBtn{
+    border-radius: 5px;
+}
