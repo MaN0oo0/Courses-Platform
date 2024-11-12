@@ -11,7 +11,7 @@ export default function Navbar() {
         <div className="container-fluid">
           <Link className="navbar-brand" to={"/"}>
             <div>
-              <b>CourسAty</b>
+              <b>CourSaty</b>
             </div>
           </Link>
           <button

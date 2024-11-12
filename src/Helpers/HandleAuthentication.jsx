@@ -14,7 +14,6 @@ api.interceptors.request.use((config) => {
     return config;
   } catch (error) {
     localStorage.removeItem("token");
-    console.error(error);
     <Navigate to={"/login"} />;
   }
 });

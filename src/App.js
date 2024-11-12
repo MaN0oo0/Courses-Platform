@@ -1,18 +1,25 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Masterlayout from "./Components/Masterlayout/Masterlayout";
 import Login from "./Components/Login/Login";
-import Courses from "./Components/Courses/Courses";
+
 import PrivateRoute from "./Helpers/ProtectRoutes";
 import Register from "./Components/Register/Register";
-import Dashboard from "./Components/Dashboard/Dashboard";
+
 import Home from "./Components/Home/Home";
 import AuthServicesProvider from "./Context/AuthServices";
 import CourseContextProvider from "./Context/CourseServices";
 import CategeoryContextProvider from "./Context/CategeoryServices";
 import Categeorie from "./Components/Categeorie/Categeorie";
+import Loading from "./Components/Assets/Loading/Loading";
 
 function App() {
+  //lazy loading for courses==>
+  const Courses = React.lazy(() => import("./Components/Courses/Courses"));
+  const Dashboard = React.lazy(() =>
+    import("./Components/Dashboard/Dashboard")
+  );
+
   return (
     <>
       <BrowserRouter>
@@ -33,7 +40,9 @@ function App() {
                 path="courses"
                 element={
                   <PrivateRoute>
-                    <Courses />
+                    <Suspense fallback={<Loading />}>
+                      <Courses />
+                    </Suspense>
                   </PrivateRoute>
                 }
               />
@@ -44,7 +53,9 @@ function App() {
                   <PrivateRoute>
                     <CourseContextProvider>
                       <CategeoryContextProvider>
-                        <Dashboard />
+                        <Suspense fallback={<Loading />}>
+                          <Dashboard />
+                        </Suspense>
                       </CategeoryContextProvider>
                     </CourseContextProvider>
                   </PrivateRoute>

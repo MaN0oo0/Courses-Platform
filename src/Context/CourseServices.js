@@ -4,12 +4,11 @@ import api from "../Helpers/HandleAuthentication";
 export let CourseContext = createContext({});
 
 export default function CourseContextProvider(props) {
-
-
   const addCourse = async (courseData) => {
     try {
       const response = await api.post("/courses", courseData);
       console.log("Course added:", response.data);
+      return response;
     } catch (error) {
       console.error("Error adding course:", error);
     }

@@ -1,9 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Suspense, useContext, useEffect, useState } from "react";
 import api from "../../Helpers/HandleAuthentication";
 import { CourseContext } from "../../Context/CourseServices";
 import { Link, useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 import FormModal from "../Assets/FormModal";
+import Loading from "../Assets/Loading/Loading";
+import CourseModal from "../Courses/CourseModal";
 
 const Dashboard = () => {
   const [courses, setCourses] = useState([]);
@@ -12,13 +14,13 @@ const Dashboard = () => {
   const [sortBy, setSortBy] = useState("Title");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [notifications, setNotifications] = useState([]);
+  // const [notifications, setNotifications] = useState([]);
   let { addCourse, getCourses } = useContext(CourseContext);
   const navigate = useNavigate();
   const fetchCourses = async (page) => {
     try {
       let data = await getCourses(page, 5, sortBy, searchTerm);
-      setCourses(data.courses);
+      setCourses(data.courses.$values);
       setTotalPages(data.totalPages);
     } catch (error) {
       console.log(error);
@@ -28,7 +30,7 @@ const Dashboard = () => {
   };
   useEffect(() => {
     fetchCourses(currentPage);
-  }, [currentPage, sortBy, searchTerm]);
+  },[searchTerm,sortBy,currentPage]);
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -89,42 +91,21 @@ const Dashboard = () => {
       </div>
 
       <div className="row col-md-12 bg-secondary mb-2 d-flex justify-content-center gap-2">
-        {courses.map((course,index) => (
+        <Suspense fallback={<Loading />}>
           <>
-            <div key={index} className="card" style={{ width: "18rem" }}>
-              <img
-                className="card-img-top"
-                src={`https://res.cloudinary.com/dckqgbato/image/upload/${
-                  course.imageUrl && course.imageUrl
-                }`}
-                alt={`${course.title}`}
-              />
-              <div className="card-body">
-                <h5 className="card-title">
-                  {course.title} - {course.instructor}
-                </h5>
-                <p className="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
-                </p>
-                <div className="HelpersBtns">
-                  <Link href="#" class="btn btn-primary">
-                    <i className="fa fa-eye"></i>
-                  </Link>
-                  <Link href="#" class="btn btn-warning">
-                    <i className="fa fa-pen"></i>
-                  </Link>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleDeleteCourse(course.id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
+            {courses &&
+              courses.map((course, index) => (
+                <>
+                  <CourseModal
+                    course={course}
+                    key={index}
+                    DeleteCourse={handleDeleteCourse}
+                  />
+  
+                </>
+              ))}
           </>
-        ))}
+        </Suspense>
       </div>
 
       <div className="pagnateBtn m-auto w-50 bg-dark p-2 d-flex justify-content-center gap-2 ">

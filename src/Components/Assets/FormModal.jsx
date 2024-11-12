@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import UploadWidget from "../Upload/Upload";
 
+
 export default function FormModal({ addCourse }) {
+
   const [show, setShow] = useState(false);
   const [course, setCourse] = useState({
     title: "",
@@ -15,16 +17,16 @@ export default function FormModal({ addCourse }) {
   const [errors, setErrors] = useState(null);
   const [responseError, setResError] = useState("");
 
-  function handleDataFromChild(data) {
+  const handleDataFromChild = (data) => {
     let myCou = { ...course };
     myCou["imageUrl"] = data.path;
     setCourse(myCou);
-  }
+  };
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(course);
 
@@ -33,13 +35,24 @@ export default function FormModal({ addCourse }) {
       description: validateField("description", course.description),
       instructor: validateField("instructor", course.instructor),
       categeoryId: validateField("categeoryId", course.categeoryId),
-      playListUrl: validateField("playListUrl", course.playListUrl),
+      // playListUrl: validateField("playListUrl", course.playListUrl),
       imageUrl: validateField("imageUrl", course.imageUrl),
     };
     if (Object.values(newErrors).every((error) => !error)) {
       try {
-        addCourse(course);
+        let data = await addCourse(course);
+        console.log(data);
+
         setErrors({});
+        setCourse({
+          title: "",
+          description: "",
+          instructor: "",
+          categeoryId: "",
+          playListUrl: "",
+          imageUrl: "",
+        });
+        setShow(false);
       } catch (error) {
         let { response } = error;
         if (response) {
@@ -92,25 +105,27 @@ export default function FormModal({ addCourse }) {
             )}
           </ul>
           <form onSubmit={handleSubmit}>
-            {["title", "description", "instructor"].map((field) => (
-              <div className="input_data" key={field}>
-                <label htmlFor={field} className="form-label">
-                  {field.replace(/([A-Z])/g, " $1").toUpperCase()}
-                </label>
-                <input
-                  onChange={handleInputChange}
-                  type={"text"}
-                  className="form-control"
-                  name={field}
-                  id={field}
-                  placeholder={`Enter your ${field
-                    .replace(/([A-Z])/g, " $1")
-                    .toLowerCase()}`}
-                  value={course[field]}
-                />
-                {errors && <p className="text-danger">{errors[field]}</p>}
-              </div>
-            ))}
+            {["title", "description", "instructor", "categeoryId"].map(
+              (field) => (
+                <div className="input_data" key={field}>
+                  <label htmlFor={field} className="form-label">
+                    {field.replace(/([A-Z])/g, " $1").toUpperCase()}
+                  </label>
+                  <input
+                    onChange={handleInputChange}
+                    type={"text"}
+                    className="form-control"
+                    name={field}
+                    id={field}
+                    placeholder={`Enter your ${field
+                      .replace(/([A-Z])/g, " $1")
+                      .toLowerCase()}`}
+                    value={course[field]}
+                  />
+                  {errors && <p className="text-danger">{errors[field]}</p>}
+                </div>
+              )
+            )}
             <div className="input_data">
               <label htmlFor="imageUrl" className="form-label">
                 Image

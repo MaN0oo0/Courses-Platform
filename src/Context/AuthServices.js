@@ -8,6 +8,7 @@ export let AuthContext = createContext({});
 export default function AuthServicesProvider(props) {
   const navigate = useNavigate();
   const [userData, setUserData] = useState("");
+  const [role, setRole] = useState([]);
 
   //#region Login
   const login = async (data) => {
@@ -25,6 +26,8 @@ export default function AuthServicesProvider(props) {
     if (token) {
       const decodedToken = jwtDecode(token.toString());
       if (checkToken(decodedToken.exp)) {
+        // setRole(decodedToken.role)
+        setRole(decodedToken. roles)
         setUserData(decodedToken);
       } else {
         localStorage.removeItem("token");
@@ -57,7 +60,9 @@ export default function AuthServicesProvider(props) {
   //#endregion LogOut
 
   return (
-    <AuthContext.Provider value={{ login, logOut, userData, checkToken,setUserData }}>
+    <AuthContext.Provider
+      value={{ login, logOut, userData, checkToken, setUserData,role }}
+    >
       {props.children}
     </AuthContext.Provider>
   );

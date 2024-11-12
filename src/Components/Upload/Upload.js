@@ -1,12 +1,12 @@
-import { React, useEffect, useRef, useState } from "react";
+import { React, useEffect, useRef } from "react";
 
 const UploadWidget = (props) => {
   const cloudinaryRef = useRef();
   const widgetRef = useRef();
   //   const [data, setData] = useState("");
-  function handleClick(res) {
+  const handleClick = (res) => {
     props.sendDataToParent(res);
-  }
+  };
   useEffect(() => {
     cloudinaryRef.current = window.cloudinary;
     widgetRef.current = cloudinaryRef.current.createUploadWidget(
@@ -16,15 +16,13 @@ const UploadWidget = (props) => {
       },
       (error, res) => {
         if (!error && res.event === "success") {
-          console.log(res.info);
-
           handleClick(res.info);
         }
 
         // console.log(res);
       }
     );
-  }, []);
+  }, [handleClick]);
 
   return (
     <>

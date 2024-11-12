@@ -14,7 +14,7 @@ export default function Categeorie() {
       setCategories(data);
     };
     featchData();
-  });
+  },[]);
 
   const HandelDeleteCat = (id) => {
     deleteCategory(id);
