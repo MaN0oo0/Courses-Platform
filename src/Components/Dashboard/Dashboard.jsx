@@ -6,11 +6,13 @@ import "./Dashboard.css";
 import FormModal from "../Assets/FormModal";
 import Loading from "../Assets/Loading/Loading";
 import CourseModal from "../Courses/CourseModal";
+import MasterCoursesLayout from "../Assets/MasterCoursesLayout/MasterCoursesLayout";
 
 const Dashboard = () => {
   const [courses, setCourses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(2);
   const [sortBy, setSortBy] = useState("Title");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -19,8 +21,9 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const fetchCourses = async (page) => {
     try {
-      let data = await getCourses(page, 5, sortBy, searchTerm);
+      let data = await getCourses(page, pageSize, sortBy, searchTerm);
       setCourses(data.courses.$values);
+
       setTotalPages(data.totalPages);
     } catch (error) {
       console.log(error);
@@ -30,7 +33,7 @@ const Dashboard = () => {
   };
   useEffect(() => {
     fetchCourses(currentPage);
-  },[searchTerm,sortBy,currentPage]);
+  }, [searchTerm, sortBy, currentPage, pageSize]);
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -45,7 +48,9 @@ const Dashboard = () => {
     await api.delete(`/courses/${courseId}`);
     setCourses(courses.filter((course) => course.id !== courseId));
   };
-
+  const PageSizeChange = (e) => {
+    setPageSize(Number(e.target.value));
+  };
   // const handleEnrollmentNotification = (studentName, courseTitle) => {
   //   setNotifications([
   //     ...notifications,
@@ -57,7 +62,7 @@ const Dashboard = () => {
     <div>
       <h1>Course Dashboard</h1>
       <div className="searchBar row col-md-12 my-3 gap-1">
-        <div className="col-md-4 d-flex justify-content-center gap-2 ">
+        <div className="col-md-3 d-flex justify-content-center gap-2 ">
           <input
             type="text"
             placeholder="Search by "
@@ -73,10 +78,10 @@ const Dashboard = () => {
           </button>
         </div>
 
-        <div className="col-md-4 d-flex   justify-content-center flex-column">
+        <div className="col-md-8 d-flex  gap-2  justify-content-evenly align-items-center ">
           <select
             id="sortBy"
-            className="form-control"
+            className="form-control-sm h-50"
             onChange={(e) => setSortBy(e.target.value)}
             value={sortBy}
           >
@@ -84,26 +89,36 @@ const Dashboard = () => {
             <option value="Instructor">Sort By Instructor</option>
             <option value="EnrollmentCount">Sort By Enrollment Count</option>
           </select>
-        </div>
-        <div className="col-md-3 d-flex justify-content-center gap-2 ">
-          <FormModal addCourse={addCourse} />
+          <select
+            className="form-control-sm h-50"
+            value={pageSize}
+            onChange={PageSizeChange}
+          >
+            <option value="2">2</option>
+            <option value="5">5</option>
+            <option value="25">25</option>
+          </select>
+          <div className="d-flex justify-content-center gap-2 ">
+            <FormModal addCourse={addCourse} />
+          </div>
         </div>
       </div>
 
       <div className="row col-md-12 bg-secondary mb-2 d-flex justify-content-center gap-2">
         <Suspense fallback={<Loading />}>
           <>
-            {courses &&
-              courses.map((course, index) => (
-                <>
-                  <CourseModal
-                    course={course}
-                    key={index}
-                    DeleteCourse={handleDeleteCourse}
-                  />
-  
-                </>
-              ))}
+            <MasterCoursesLayout>
+              {courses &&
+                courses.map((course, index) => (
+                  <>
+                    <CourseModal
+                      course={course}
+                      key={index}
+                      DeleteCourse={handleDeleteCourse}
+                    />
+                  </>
+                ))}
+            </MasterCoursesLayout>
           </>
         </Suspense>
       </div>

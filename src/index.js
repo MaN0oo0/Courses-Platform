@@ -12,7 +12,7 @@ import Loading from "./Components/Assets/Loading/Loading";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ErrorBoundary>
+    <ErrorBoundary fallback={<Loading />}>
       <Suspense fallback={<Loading />}>
         <App />
       </Suspense>

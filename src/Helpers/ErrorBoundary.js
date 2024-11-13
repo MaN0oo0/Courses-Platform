@@ -13,15 +13,10 @@ export default class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      return <h1>Something went wrong.</h1>;
+      // You can render any custom fallback UI
+      return this.props.fallback;
     }
+
     return this.props.children;
   }
 }
-
-// Usage
-<ErrorBoundary>
-  <Suspense fallback={<div>Loading...</div>}>
-    <App />
-  </Suspense>
-</ErrorBoundary>;

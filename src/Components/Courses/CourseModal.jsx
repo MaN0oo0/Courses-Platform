@@ -4,7 +4,9 @@ import DeleteModal from "../Assets/DeleteModal";
 import { AuthContext } from "../../Context/AuthServices";
 
 export default function CourseModal(props) {
-  let { title, instructor, imageUrl, id } = props.course;
+  let { title, instructor, imageUrl, description, id,categeoryName } = props.course;
+
+
   let { role } = useContext(AuthContext);
 
   return (
@@ -21,13 +23,15 @@ export default function CourseModal(props) {
           alt={`${title}`}
         />
         <div className="card-body">
-          <h5 className="card-title">
-            {title} - {instructor}
-          </h5>
-          <p className="card-text">
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
-          </p>
+          <div className="d-flex justify-content-between align-items-center">
+            <h5 className="card-title">{title}</h5>
+
+            <span class="badge text-bg-secondary">{categeoryName?categeoryName:'Othera'}</span>
+          </div>
+          <span className="text-muted">
+            <b>instructor</b> : {instructor}
+          </span>
+          <p className="card-text">{description}</p>
           <div className="HelpersBtns">
             {role && role.includes("Admin") ? (
               <>
@@ -40,7 +44,10 @@ export default function CourseModal(props) {
                 <DeleteModal DeleteCat={props.DeleteCourse} catId={id} />
               </>
             ) : (
-              <button className="btn btn-primary">  <i className="fa fa-pen"></i></button>
+              <button className="btn btn-primary">
+                {" "}
+                <i className="fa fa-pen"></i>
+              </button>
             )}
 
             {/* <button className="btn btn-danger" onClick={() => DeleteCourse(id)}>

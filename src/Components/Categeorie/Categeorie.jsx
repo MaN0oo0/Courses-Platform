@@ -11,10 +11,10 @@ export default function Categeorie() {
   useEffect(() => {
     const featchData = async () => {
       let data = await getCategeoryes();
-      setCategories(data);
+      setCategories(data.$values);
     };
     featchData();
-  },[]);
+  }, [getCategeoryes]);
 
   const HandelDeleteCat = (id) => {
     deleteCategory(id);
@@ -22,7 +22,7 @@ export default function Categeorie() {
   };
 
   const handelUpdateCat = (res) => {
-    setCategories(res);
+    setCategories(res.$values);
   };
 
   return (
@@ -38,7 +38,48 @@ export default function Categeorie() {
             </Link>
           </div>
         </div>
-        {categories &&
+        <table class="table table-dark table-striped-columns">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Description</th>
+              <th scope="col">Handle</th>
+            </tr>
+          </thead>
+          <tbody>
+            {categories &&
+              categories.map((category, index) => { return(
+                <>
+                 <tr key={index}>
+                  <th scope="row">{category.id.substring(0,5)}</th>
+                  <td >{category.name}</td>
+                  <td>{category.description.substring(0,55)}</td>
+                  <td className="HelpersBtns">
+                
+                    {
+                      <EditCatModal
+                        categoryData={category}
+                        UpdateCat={handelUpdateCat}
+                      />
+                    }
+                     {
+                      <DeleteModal
+                        DeleteCat={HandelDeleteCat}
+                        catId={category.id}
+                      />
+                    }
+                  </td>
+                 
+                </tr>
+                </>
+              )
+               
+              })}
+          </tbody>
+        </table>
+
+        {/* {categories &&
           categories.map((category, index) => {
             return (
               <div key={index} className="col-md-4 my-2">
@@ -68,7 +109,7 @@ export default function Categeorie() {
                 </div>
               </div>
             );
-          })}
+          })} */}
       </div>
     </>
   );

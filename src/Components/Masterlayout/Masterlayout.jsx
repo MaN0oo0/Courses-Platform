@@ -10,7 +10,7 @@ export default function Masterlayout(props) {
         logOut={props.logOut}
         userdata={props.userdata}
       />
-      <div className={`container-md my-3 bg-secondary`}>
+      <div className={`container-md my-3 bg-dark`}>
         <Outlet></Outlet>
       </div>
       <Footer />

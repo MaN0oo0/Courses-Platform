@@ -2,6 +2,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import api from "../../Helpers/HandleAuthentication";
 import Loading from "../Assets/Loading/Loading";
 import CourseModal from "./CourseModal";
+import MasterCoursesLayout from "../Assets/MasterCoursesLayout/MasterCoursesLayout";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -27,15 +28,16 @@ const Courses = () => {
       <h1>Courses</h1>
       <ul>
         <Suspense fallback={<Loading />}>
-          <div className="row col-md-12 my-3 bg-secondary mb-2 d-flex justify-content-center gap-2 overflow-y-auto">
+          <MasterCoursesLayout>
             {courses.map((course, index) => (
               <CourseModal
                 course={course}
+                categeory={course.categeory}
                 key={index}
                 DeleteCourse={handleDeleteCourse}
               />
             ))}
-          </div>
+          </MasterCoursesLayout>
         </Suspense>
       </ul>
     </div>
