@@ -1,9 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import UploadWidget from "../Upload/Upload";
-
+import { CategeoryContext } from "../../Context/CategeoryServices";
 
 export default function FormModal({ addCourse }) {
+  let { getCategeoryes } = useContext(CategeoryContext);
+  const [categories, setCategories] = React.useState([]);
 
   const [show, setShow] = useState(false);
   const [course, setCourse] = useState({
@@ -16,6 +18,14 @@ export default function FormModal({ addCourse }) {
   });
   const [errors, setErrors] = useState(null);
   const [responseError, setResError] = useState("");
+
+  useEffect(() => {
+    const featchData = async () => {
+      let data = await getCategeoryes();
+      setCategories(data.$values);
+    };
+    featchData();
+  }, [getCategeoryes]);
 
   const handleDataFromChild = (data) => {
     let myCou = { ...course };
@@ -105,27 +115,44 @@ export default function FormModal({ addCourse }) {
             )}
           </ul>
           <form onSubmit={handleSubmit}>
-            {["title", "description", "instructor", "categeoryId"].map(
-              (field) => (
-                <div className="input_data" key={field}>
-                  <label htmlFor={field} className="form-label">
-                    {field.replace(/([A-Z])/g, " $1").toUpperCase()}
-                  </label>
-                  <input
-                    onChange={handleInputChange}
-                    type={"text"}
-                    className="form-control"
-                    name={field}
-                    id={field}
-                    placeholder={`Enter your ${field
-                      .replace(/([A-Z])/g, " $1")
-                      .toLowerCase()}`}
-                    value={course[field]}
-                  />
-                  {errors && <p className="text-danger">{errors[field]}</p>}
-                </div>
-              )
-            )}
+            {["title", "description", "instructor"].map((field) => (
+              <div className="input_data" key={field}>
+                <label htmlFor={field} className="form-label">
+                  {field.replace(/([A-Z])/g, " $1").toUpperCase()}
+                </label>
+                <input
+                  onChange={handleInputChange}
+                  type={"text"}
+                  className="form-control"
+                  name={field}
+                  id={field}
+                  placeholder={`Enter your ${field
+                    .replace(/([A-Z])/g, " $1")
+                    .toLowerCase()}`}
+                  value={course[field]}
+                />
+                {errors && <p className="text-danger">{errors[field]}</p>}
+              </div>
+            ))}
+            <div className="input_data">
+              <label htmlFor="categeoryId" className="form-label">
+                categeory
+              </label>
+              <select
+                className="form-control-sm"
+                onChange={handleInputChange}
+                name="categeoryId"
+              >
+                <option value="">Select a categeory</option>
+                {categories.map((cat, index) => {
+                  return (
+                    <option key={index} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
             <div className="input_data">
               <label htmlFor="imageUrl" className="form-label">
                 Image

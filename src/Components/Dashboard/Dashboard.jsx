@@ -1,12 +1,13 @@
 import React, { Suspense, useContext, useEffect, useState } from "react";
 import api from "../../Helpers/HandleAuthentication";
 import { CourseContext } from "../../Context/CourseServices";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 import FormModal from "../Assets/FormModal";
 import Loading from "../Assets/Loading/Loading";
 import CourseModal from "../Courses/CourseModal";
 import MasterCoursesLayout from "../Assets/MasterCoursesLayout/MasterCoursesLayout";
+
 
 const Dashboard = () => {
   const [courses, setCourses] = useState([]);
@@ -18,6 +19,7 @@ const Dashboard = () => {
 
   // const [notifications, setNotifications] = useState([]);
   let { addCourse, getCourses } = useContext(CourseContext);
+
   const navigate = useNavigate();
   const fetchCourses = async (page) => {
     try {

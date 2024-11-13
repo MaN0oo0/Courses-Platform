@@ -9,7 +9,7 @@ const PrivateRoute = ({ children }) => {
       setUserData(null);
       logOut();
     }
-  }, []);
+  }, [setUserData,logOut]);
 
   return (
     <>{localStorage.getItem("token") ? children : <Navigate to="/login" />}</>

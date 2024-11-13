@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext } from "react";
 import api from "../Helpers/HandleAuthentication";
 
 export let CourseContext = createContext({});

@@ -4,7 +4,7 @@ import { Form } from "react-bootstrap";
 import { CategeoryContext } from "../../Context/CategeoryServices";
 
 export default function EditCatModal(props) {
-  let { editCategory, getCategeoryes } = useContext(CategeoryContext);
+  let { editCategory } = useContext(CategeoryContext);
   const [show, setShow] = useState(false);
   const [categorie, setCategorie] = React.useState({
     id: "",
@@ -19,7 +19,7 @@ export default function EditCatModal(props) {
 
   useEffect(() => {
     setCategorie(props.categoryData);
-  }, []);
+  }, [props.categoryData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
